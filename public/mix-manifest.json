@@ -1,0 +1,16 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/css/app.css": "/css/app.css",
+    "/vendor/fontawesome-free/css/all.min.css": "/vendor/fontawesome-free/css/all.min.css",
+    "/vendor/fontawesome-free/webfonts/fa-brands-400.woff2": "/vendor/fontawesome-free/webfonts/fa-brands-400.woff2",
+    "/vendor/fontawesome-free/webfonts/fa-solid-900.woff": "/vendor/fontawesome-free/webfonts/fa-solid-900.woff",
+    "/vendor/fontawesome-free/webfonts/fa-solid-900.woff2": "/vendor/fontawesome-free/webfonts/fa-solid-900.woff2",
+    "/vendor/startbootstrap-sb-admin-2/css/sb-admin-2.min.css": "/vendor/startbootstrap-sb-admin-2/css/sb-admin-2.min.css",
+    "/vendor/datatables/dataTables.bootstrap4.min.css": "/vendor/datatables/dataTables.bootstrap4.min.css",
+    "/vendor/jquery/jquery.min.js": "/vendor/jquery/jquery.min.js",
+    "/vendor/bootstrap/js/bootstrap.bundle.min.js": "/vendor/bootstrap/js/bootstrap.bundle.min.js",
+    "/vendor/jquery-easing/jquery.easing.min.js": "/vendor/jquery-easing/jquery.easing.min.js",
+    "/vendor/startbootstrap-sb-admin-2/js/sb-admin-2.min.js": "/vendor/startbootstrap-sb-admin-2/js/sb-admin-2.min.js",
+    "/vendor/datatables/jquery.dataTables.min.js": "/vendor/datatables/jquery.dataTables.min.js",
+    "/vendor/datatables/dataTables.bootstrap4.min.js": "/vendor/datatables/dataTables.bootstrap4.min.js"
+}
