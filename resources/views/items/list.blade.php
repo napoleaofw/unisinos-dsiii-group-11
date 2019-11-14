@@ -138,7 +138,16 @@
               <h6 class="m-0 font-weight-bold text-primary">Registros</h6>
             </div>
             <div class="card-body">
-              <a href="/items/form" class="btn btn-primary" style="float: right; margin-bottom: 20px;">Novo registro</a>
+
+              @if(Session::has('message'))
+                <div class="card border-left-success mb-3">
+                  <div class="card-body">
+                    <p>{{ Session::get('message') }}</p>
+                  </div>
+                </div>
+              @endif
+
+              <a href="/items/create" class="btn btn-primary" style="float: right; margin-bottom: 20px;">Novo registro</a>
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
@@ -147,6 +156,7 @@
                       <th>Descrição</th>
                       <th>Categoria</th>
                       <th>Unidade de medida</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tfoot>
@@ -155,111 +165,21 @@
                       <th>Descrição</th>
                       <th>Categoria</th>
                       <th>Unidade de medida</th>
+                      <th></th>
                     </tr>
                   </tfoot>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Fralda</td>
-                      <td>Higiene</td>
-                      <td>PT - Pacote</td>
-                    </tr>
-                    <tr>
-                      <td>2</td>
-                      <td>Papel higiênico</td>
-                      <td>Higiene</td>
-                      <td>PT - Pacote</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>Creme dental</td>
-                      <td>Higiene</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>4</td>
-                      <td>Escova de dentes</td>
-                      <td>Higiene</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>5</td>
-                      <td>Pente</td>
-                      <td>Higiene</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>6</td>
-                      <td>Camiseta manga longa</td>
-                      <td>Vestuário</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>7</td>
-                      <td>Casaco</td>
-                      <td>Vestuário</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>8</td>
-                      <td>Calça de moletom</td>
-                      <td>Vestuário</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>9</td>
-                      <td>Calça jeans</td>
-                      <td>Vestuário</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>10</td>
-                      <td>Tênis</td>
-                      <td>Vestuário</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>11</td>
-                      <td>Arroz</td>
-                      <td>Alimentos</td>
-                      <td>kg - Kilograma</td>
-                    </tr>
-                    <tr>
-                      <td>12</td>
-                      <td>Feijão</td>
-                      <td>Alimentos</td>
-                      <td>kg - Kilograma</td>
-                    </tr>
-                    <tr>
-                      <td>13</td>
-                      <td>Frango</td>
-                      <td>Alimentos</td>
-                      <td>kg - Kilograma</td>
-                    </tr>
-                    <tr>
-                      <td>14</td>
-                      <td>Alface</td>
-                      <td>Alimentos</td>
-                      <td>kg - Kilograma</td>
-                    </tr>
-                    <tr>
-                      <td>15</td>
-                      <td>Tomate</td>
-                      <td>Alimentos</td>
-                      <td>kg - Kilograma</td>
-                    </tr>
-                    <tr>
-                      <td>16</td>
-                      <td>Bengala</td>
-                      <td>Locomoção</td>
-                      <td>UN - Unidade</td>
-                    </tr>
-                    <tr>
-                      <td>17</td>
-                      <td>Cadeira de rodas</td>
-                      <td>Locomoção</td>
-                      <td>UN - Unidade</td>
-                    </tr>
+                    @foreach($records as $record)
+                      <tr>
+                        <td>{{ $record->id }}</td>
+                        <td>{{ $record->description }}</td>
+                        <td>{{ $record->category->description }}</td>
+                        <td>{{ $record->measureUnit->acronym . ' - ' . $record->measureUnit->description }}</td>
+                        <td>
+                          <a href="/items/{{ $record->id }}/edit">Editar</a>
+                        </td>
+                      </tr>
+                    @endforeach
                   </tbody>
                 </table>
               </div>
@@ -312,6 +232,10 @@
     // Call the dataTables jQuery plugin
     $(document).ready(function() {
       $('#dataTable').DataTable({
+        "columnDefs": [{
+          "targets": 4,
+          "orderable": false
+        }],
         "language": {
           "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"
         },

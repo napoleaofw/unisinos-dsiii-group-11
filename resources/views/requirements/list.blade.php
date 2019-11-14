@@ -138,7 +138,16 @@
               <h6 class="m-0 font-weight-bold text-primary">Registros</h6>
             </div>
             <div class="card-body">
-              <a href="/requirements/form" class="btn btn-primary" style="float: right; margin-bottom: 20px;">Novo registro</a>
+
+              @if(Session::has('message'))
+                <div class="card border-left-success mb-3">
+                  <div class="card-body">
+                    <p>{{ Session::get('message') }}</p>
+                  </div>
+                </div>
+              @endif
+              
+              <a href="/requirements/create" class="btn btn-primary" style="float: right; margin-bottom: 20px;">Novo registro</a>
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
@@ -147,6 +156,7 @@
                       <th>Item</th>
                       <th>Quantidade</th>
                       <th>Urgência</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tfoot>
@@ -155,111 +165,21 @@
                       <th>Item</th>
                       <th>Quantidade</th>
                       <th>Urgência</th>
+                      <th></th>
                     </tr>
                   </tfoot>
-                  <tbody class="text-gray-100">
-                    <tr class="bg-gradient-danger">
-                      <td>1</td>
-                      <td>Fralda</td>
-                      <td>20 PT</td>
-                      <td>1 - Alta</td>
-                    </tr>
-                    <tr class="bg-gradient-danger">
-                      <td>2</td>
-                      <td>Papel higiênico</td>
-                      <td>30 PT</td>
-                      <td>1 - Alta</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>3</td>
-                      <td>Creme dental</td>
-                      <td>10 UN</td>
-                      <td>2 - Média</td>
-                    </tr>
-                    <tr class="bg-gradient-success">
-                      <td>4</td>
-                      <td>Escova de dentes</td>
-                      <td>12 UN</td>
-                      <td>3 - Baixa</td>
-                    </tr>
-                    <tr class="bg-gradient-success">
-                      <td>5</td>
-                      <td>Pente</td>
-                      <td>5 UN</td>
-                      <td>3 - Baixa</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>6</td>
-                      <td>Camiseta manga longa</td>
-                      <td>8 UN</td>
-                      <td>2 - Média</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>7</td>
-                      <td>Casaco</td>
-                      <td>10 UN</td>
-                      <td>2 - Média</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>8</td>
-                      <td>Calça de moletom</td>
-                      <td>9 UN</td>
-                      <td>2 - Média</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>9</td>
-                      <td>Calça jeans</td>
-                      <td>4 UN</td>
-                      <td>2 - Média</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>10</td>
-                      <td>Tênis</td>
-                      <td>4 UN</td>
-                      <td>2 - Média</td>
-                    </tr>
-                    <tr class="bg-gradient-danger">
-                      <td>11</td>
-                      <td>Arroz</td>
-                      <td>22 kg</td>
-                      <td>1 - Alta</td>
-                    </tr>
-                    <tr class="bg-gradient-danger">
-                      <td>12</td>
-                      <td>Feijão</td>
-                      <td>15 kg</td>
-                      <td>1 - Alta</td>
-                    </tr>
-                    <tr class="bg-gradient-danger">
-                      <td>13</td>
-                      <td>Frango</td>
-                      <td>12 kg</td>
-                      <td>1 - Alta</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>14</td>
-                      <td>Alface</td>
-                      <td>4 kg</td>
-                      <td>2 - Média</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>15</td>
-                      <td>Tomate</td>
-                      <td>8 kg</td>
-                      <td>2 - Média</td>
-                    </tr>
-                    <tr class="bg-gradient-danger">
-                      <td>16</td>
-                      <td>Bengala</td>
-                      <td>7 UN</td>
-                      <td>1 - Alta</td>
-                    </tr>
-                    <tr class="bg-gradient-warning">
-                      <td>17</td>
-                      <td>Cadeira de rodas</td>
-                      <td>3 UN</td>
-                      <td>2 - Média</td>
-                    </tr>
+                  <tbody>
+                    @foreach($records as $record)
+                      <tr class="text-gray-100 bg-gradient-{{ $record->urgency->importance == 1 ? 'danger' : ($record->urgency->importance == 2 ? 'warning' : 'success') }}">
+                        <td>{{ $record->id }}</td>
+                        <td>{{ $record->item->description }}</td>
+                        <td>{{ $record->quantity . ' - ' . $record->item->measureUnit->acronym }}</td>
+                        <td>{{ $record->urgency->importance . ' - ' . $record->urgency->description }}</td>
+                        <td>
+                          <a href="/requirements/{{ $record->id }}/edit" class="text-gray-900">Editar</a>
+                        </td>
+                      </tr>
+                    @endforeach
                   </tbody>
                 </table>
               </div>
@@ -312,6 +232,10 @@
     // Call the dataTables jQuery plugin
     $(document).ready(function() {
       $('#dataTable').DataTable({
+        "columnDefs": [{
+          "targets": 4,
+          "orderable": false
+        }],
         "language": {
           "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"
         },

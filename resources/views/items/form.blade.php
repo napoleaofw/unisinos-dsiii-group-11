@@ -138,49 +138,51 @@
                   <h6 class="m-0 font-weight-bold text-primary">Formulário de item do sistema</h6>
                 </div>
                 <div class="card-body">
+
+                  @if($errors->any())
+                    <div class="card border-left-danger alert alert-danger">
+                      <div class="card-body">
+                        <ul>
+                          @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                          @endforeach
+                        </ul>
+                      </div>
+                    </div>
+                  @endif
+
                   <p>Preencha os dados para cadastrar um novo item no sistema.</p>
                   <!-- <p>Preencha os dados para atualizar o item no sistema.</p> -->
                   
-                  <form>
+                  <form action="{{ isset($record->id) ? route('items.update', $record->id) : route('items.store') }}" method="POST">
+                    @csrf
+                    @method(isset($record->id) ? "PUT" : "POST")
                     <div class="form-group">
-                      <input type="text" class="form-control" id="description" placeholder="Descrição">
+                      <input type="text" class="form-control" id="description" name="description" placeholder="Descrição" value="{{ old('description', $record->description) }}">
                     </div>
                     <div class="form-group">
-                      <select class="form-control" name="category" id="category">
+                      <select class="form-control" name="category_id" id="category">
                         <option value="">Selecione a categoria</option>
-                        <option value="1">Higiene</option>
-                        <option value="2">Vestuário</option>
-                        <option value="3">Alimentos</option>
-                        <option value="4">Locomoção</option>
+                        @foreach($categoryRecords as $categoryRecord)
+                          <option value="{{ $categoryRecord->id }}" {{ $categoryRecord->id == old('category_id', $record->category_id) ? "selected" : "" }}>{{ $categoryRecord->description }}</option>
+                        @endforeach
                       </select>
                     </div>
                     <div class="form-group">
-                      <select class="form-control" name="measureUnit" id="measureUnit">
+                      <select class="form-control" name="measure_unit_id" id="measureUnit">
                         <option value="">Selecione a unidade de medida</option>
-                        <option value="1">UN - Unidade</option>
-                        <option value="2">PT - Pacote</option>
-                        <option value="3">RL - Rolo</option>
-                        <option value="4">CX - Caixa</option>
-                        <option value="5">DZ - Dúzia</option>
-                        <option value="6">PA - Par</option>
-                        <option value="7">PC - Peça</option>
-                        <option value="8">kg - Kilograma</option>
-                        <option value="9">g - Grama</option>
-                        <option value="10">l - Litro</option>
-                        <option value="11">ml - Mililitro</option>
-                        <option value="12">m - Metro</option>
-                        <option value="13">m2 - Metro quadrado</option>
-                        <option value="14">m3 - Metro cúbico</option>
-                        <option value="15">cm - Centímetro</option>
-                        <option value="16">cm2 - Centímetro quadrado</option>
+                        @foreach($measureUnitRecords as $measureUnitRecord)
+                          <option value="{{ $measureUnitRecord->id }}" {{ $measureUnitRecord->id == old('measure_unit_id', $record->measure_unit_id) ? "selected" : "" }}>{{ $measureUnitRecord->acronym . ' - ' . $measureUnitRecord->description }}</option>
+                        @endforeach
                       </select>
                     </div>
-                    <a href="/items" class="btn btn-danger">
-                      Cancelar
-                    </a>
-                    <a href="#" class="btn btn-success">
-                      Salvar
-                    </a>
+                    <a href="/items" class="btn btn-primary">Cancelar</a>
+                    <input type="submit" class="btn btn-success ml-3 float-right" value="Salvar">
+                    @if(isset($record->id))
+                      <a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#deleteModal">
+                        Excluir
+                      </a>
+                    @endif
                   </form>
                 </div>
               </div>
@@ -215,6 +217,34 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
+
+  @if(isset($record->id))
+    <!-- Delete Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Excluir registro</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Você tem certeza de que deseja excluir esse registro?</p>
+            <p>Os dados serão removidos permanentemente do sistema.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="button" data-dismiss="modal">Cancelar</button>
+            <form action="{{ route('items.destroy', $record->id) }}" method="POST">
+              @csrf
+              @method('DELETE')
+              <input type="submit" class="btn btn-danger" value="Excluir">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endif
 
   <!-- Bootstrap core JavaScript-->
   <script src="{{ mix('vendor/jquery/jquery.min.js') }}"></script>

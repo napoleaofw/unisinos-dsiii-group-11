@@ -138,49 +138,51 @@
                   <h6 class="m-0 font-weight-bold text-primary">Formulário de necessidade do sistema</h6>
                 </div>
                 <div class="card-body">
+
+                  @if($errors->any())
+                    <div class="card border-left-danger alert alert-danger">
+                      <div class="card-body">
+                        <ul>
+                          @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                          @endforeach
+                        </ul>
+                      </div>
+                    </div>
+                  @endif
+
                   <p>Preencha os dados para cadastrar uma nova necessidade no sistema.</p>
                   <!-- <p>Preencha os dados para atualizar a necessidade no sistema.</p> -->
                   
-                  <form>
+                  <form action="{{ isset($record->id) ? route('requirements.update', $record->id) : route('requirements.store') }}" method="POST">
+                    @csrf
+                    @method(isset($record->id) ? "PUT" : "POST")
                     <div class="form-group">
-                      <select class="form-control" name="item" id="item">
+                      <select class="form-control" name="item_id" id="item">
                         <option value="">Selecione o item</option>
-                        <option value="1">Fralda</option>
-                        <option value="2">Papel higiênico</option>
-                        <option value="3">Creme dental</option>
-                        <option value="4">Escova de dentes</option>
-                        <option value="5">Pente</option>
-                        <option value="6">Camiseta manga longa</option>
-                        <option value="7">Casaco</option>
-                        <option value="8">Calça de moletom</option>
-                        <option value="9">Calça jeans</option>
-                        <option value="10">Tênis</option>
-                        <option value="11">Arroz</option>
-                        <option value="12">Feijão</option>
-                        <option value="13">Frango</option>
-                        <option value="14">Alface</option>
-                        <option value="15">Tomate</option>
-                        <option value="16">Bengala</option>
-                        <option value="17">Cadeira de rodas</option>
+                        @foreach($itemRecords as $itemRecord)
+                          <option value="{{ $itemRecord->id }}" {{ $itemRecord->id == old('item_id', $record->item_id) ? "selected" : "" }}>{{ $itemRecord->description }}</option>
+                        @endforeach
                       </select>
                     </div>
                     <div class="form-group">
-                      <input type="text" class="form-control" id="quantity" placeholder="Quantidade">
-                    </div>
-                    <div class="form-group">
-                      <select class="form-control" name="urgency" id="urgency">
+                      <select class="form-control" name="urgency_id" id="urgency">
                         <option value="">Selecione a urgência</option>
-                        <option value="1">Baixa</option>
-                        <option value="2">Média</option>
-                        <option value="3">Alta</option>
+                        @foreach($urgencyRecords as $urgencyRecord)
+                          <option value="{{ $urgencyRecord->id }}" {{ $urgencyRecord->id == old('urgency_id', $record->urgency_id) ? "selected" : "" }}>{{ $urgencyRecord->description }}</option>
+                        @endforeach
                       </select>
                     </div>
-                    <a href="/requirements" class="btn btn-danger">
-                      Cancelar
-                    </a>
-                    <a href="#" class="btn btn-success">
-                      Salvar
-                    </a>
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantidade" value="{{ old('quantity', $record->quantity) }}">
+                    </div>
+                    <a href="/requirements" class="btn btn-primary">Cancelar</a>
+                    <input type="submit" class="btn btn-success ml-3 float-right" value="Salvar">
+                    @if(isset($record->id))
+                      <a class="btn btn-danger float-right" href="#" data-toggle="modal" data-target="#deleteModal">
+                        Excluir
+                      </a>
+                    @endif
                   </form>
                 </div>
               </div>
@@ -215,6 +217,34 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
+
+  @if(isset($record->id))
+    <!-- Delete Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Excluir registro</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Você tem certeza de que deseja excluir esse registro?</p>
+            <p>Os dados serão removidos permanentemente do sistema.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="button" data-dismiss="modal">Cancelar</button>
+            <form action="{{ route('requirements.destroy', $record->id) }}" method="POST">
+              @csrf
+              @method('DELETE')
+              <input type="submit" class="btn btn-danger" value="Excluir">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endif
 
   <!-- Bootstrap core JavaScript-->
   <script src="{{ mix('vendor/jquery/jquery.min.js') }}"></script>

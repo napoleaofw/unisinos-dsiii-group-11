@@ -2,3 +2,6 @@
   font-size: 0.75rem;
 }
 
+td a.text-gray-900:hover {
+  color: #000000;
+}

@@ -11,23 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    // return view('welcome');
-    return view('items/list');
-});
+Route::get('/', 'ItemController@index');
 
-Route::get('items', function() {
-    return view('items/list');
-});
-
-Route::get('items/form', function() {
-    return view('items/form');
-});
-
-Route::get('requirements', function() {
-    return view('requirements/list');
-});
-
-Route::get('requirements/form', function() {
-    return view('requirements/form');
-});
+Route::resources([
+    'items' => 'ItemController',
+    'requirements' => 'RequirementController'
+]);
